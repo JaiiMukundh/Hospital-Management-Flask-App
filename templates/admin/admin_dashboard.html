@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Admin Dashboard</h1>
+    <p>Welcome back, {{ current_user.username }}!</p>
+
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-header">Total Doctors</div>
+                <div class="card-body"><h5 class="card-title">{{ stats.doctors }}</h5></div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-header">Total Patients</div>
+                <div class="card-body"><h5 class="card-title">{{ stats.patients }}</h5></div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-header">Total Appointments</div>
+                <div class="card-body"><h5 class="card-title">{{ stats.appointments }}</h5></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Management Links</h2>
+            <div class="list-group">
+                <a href="{{ url_for('add_doctor') }}" class="list-group-item list-group-item-action">Add a New Doctor</a>
+                <a href="{{ url_for('view_doctors') }}" class="list-group-item list-group-item-action">View & Manage Doctors</a>
+                <a href="{{ url_for('view_patients') }}" class="list-group-item list-group-item-action">View & Manage Patients</a>
+                <a href="{{ url_for('view_appointments') }}" class="list-group-item list-group-item-action">View All Appointments</a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h2>System Overview</h2>
+            <canvas id="adminChart"></canvas>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch("{{ url_for('admin_chart_data') }}")
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('adminChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: data,
+                    options: {
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+            });
+    });
+</script>
+{% endblock %}

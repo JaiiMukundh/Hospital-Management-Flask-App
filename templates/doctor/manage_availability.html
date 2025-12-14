@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Manage Availability</h1>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header"><h4>Update Schedule</h4></div>
+                <div class="card-body">
+                     <form method="POST" action="">
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            {{ form.day.label(class="form-label") }}
+                            {{ form.day(class="form-select") }}
+                        </div>
+                         <div class="mb-3">
+                            {{ form.start_time.label(class="form-label") }}
+                            {{ form.start_time(class="form-control") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.end_time.label(class="form-label") }}
+                            {{ form.end_time(class="form-control") }}
+                        </div>
+                        {{ form.submit(class="btn btn-primary") }}
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h4>Current Schedule</h4>
+            <ul class="list-group">
+                {% for avail in availabilities|sort(attribute='day_of_week') %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <strong>{{ avail.day_of_week }}</strong>
+                        <span>{{ avail.start_time.strftime('%I:%M %p') }} - {{ avail.end_time.strftime('%I:%M %p') }}</span>
+                    </li>
+                {% else %}
+                    <li class="list-group-item">No schedule set. Please add your availability.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}

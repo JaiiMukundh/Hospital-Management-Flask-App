@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="text-center p-5 mb-4 bg-light rounded-3">
+        <h1 class="display-4">Welcome to the Hospital Management System</h1>
+        <p class="lead">One Stop Solution for managing hospital operations efficiently.</p>
+        <hr class="my-4">
+        <p>Log in or register to get started.</p>
+        {% if not current_user.is_authenticated %}
+        <a class="btn btn-primary btn-lg" href="{{ url_for('login') }}" role="button">Login</a>
+        <a class="btn btn-secondary btn-lg" href="{{ url_for('register') }}" role="button">Register</a>
+        {% endif %}
+    </div>
+{% endblock %}

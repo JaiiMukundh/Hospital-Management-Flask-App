@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Patient Dashboard</h1>
+    <p>Welcome, {{ current_user.name }}!</p>
+
+    <div class="my-4">
+        <a href="{{ url_for('book_appointment') }}" class="btn btn-primary">Book New Appointment</a>
+        <a href="{{ url_for('view_history') }}" class="btn btn-secondary">View Past Appointments</a>
+    </div>
+
+    <h3>Your Upcoming Appointments</h3>
+     <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr><th>Doctor</th><th>Specialization</th><th>Date & Time</th><th>Status</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+                {% for appt in appointments %}
+                <tr>
+                    <td>Dr. {{ appt.doctor.name }}</td>
+                    <td>{{ appt.doctor.department.name }}</td>
+                    <td>{{ appt.appointment_datetime.strftime('%Y-%m-%d %I:%M %p') }}</td>
+                    <td><span class="badge bg-primary">{{ appt.status }}</span></td>
+                    <td>
+                        <form action="{{ url_for('cancel_appointment', appointment_id=appt.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
+                            <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5" class="text-center">You have no upcoming appointments.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

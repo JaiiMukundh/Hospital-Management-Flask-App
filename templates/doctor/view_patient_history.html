@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>Medical History for {{ patient.name }}</h2>
+    <a href="{{ url_for('doctor_dashboard') }}" class="btn btn-secondary mb-3">Back to Dashboard</a>
+    
+    {% for appt in appointments %}
+    <div class="card mb-3">
+        <div class="card-header">
+            Appointment on {{ appt.appointment_datetime.strftime('%B %d, %Y at %I:%M %p') }}
+        </div>
+        <div class="card-body">
+            {% if appt.treatment %}
+                <h5 class="card-title">Diagnosis</h5>
+                <p class="card-text">{{ appt.treatment.diagnosis }}</p>
+                <h5 class="card-title">Prescription</h5>
+                <p class="card-text">{{ appt.treatment.prescription }}</p>
+            {% else %}
+                <p class="card-text">No treatment record found for this appointment.</p>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <p>No past appointments found for this patient with you.</p>
+    {% endfor %}
+{% endblock %}

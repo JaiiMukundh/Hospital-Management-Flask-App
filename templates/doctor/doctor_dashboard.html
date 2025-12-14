@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Doctor Dashboard</h1>
+    <p>Welcome, Dr. {{ current_user.name }}!</p>
+    <a href="{{ url_for('manage_availability') }}" class="btn btn-info mb-3">Manage Availability</a>
+
+    <h3>Today's Appointments</h3>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr><th>Time</th><th>Patient</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+                {% for appt in appointments %}
+                <tr>
+                    <td>{{ appt.appointment_datetime.strftime('%I:%M %p') }}</td>
+                    <td><a href="{{ url_for('view_patient_history', patient_id=appt.patient.id) }}">{{ appt.patient.name }}</a></td>
+                    <td>
+                        <span class="badge {% if appt.status == 'Booked' %}bg-primary{% elif appt.status == 'Completed' %}bg-success{% else %}bg-danger{% endif %}">{{ appt.status }}</span>
+                    </td>
+                    <td>
+                        {% if appt.status == 'Booked' %}
+                            <a href="{{ url_for('add_treatment', appointment_id=appt.id) }}" class="btn btn-primary btn-sm">Add Treatment</a>
+                        {% elif appt.treatment %}
+                             <a href="{{ url_for('view_patient_history', patient_id=appt.patient.id) }}" class="btn btn-secondary btn-sm">View Record</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4" class="text-center">No appointments scheduled for today.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

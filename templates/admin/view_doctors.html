@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>Manage Doctors</h2>
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <form method="GET" action="{{ url_for('view_doctors') }}">
+                <div class="input-group">
+                    <input type="search" class="form-control" placeholder="Search by name or specialization..." name="query" value="{{ query or '' }}">
+                    <button class="btn btn-outline-secondary" type="submit">Search</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6 text-end">
+            <a href="{{ url_for('add_doctor') }}" class="btn btn-primary">Add New Doctor</a>
+        </div>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr><th>ID</th><th>Name</th><th>Specialization</th><th>Email</th><th>Phone</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+                {% for doctor in doctors %}
+                <tr>
+                    <td>{{ doctor.id }}</td>
+                    <td>{{ doctor.name }}</td>
+                    <td>{{ doctor.department.name }}</td>
+                    <td>{{ doctor.email }}</td>
+                    <td>{{ doctor.phone }}</td>
+                    <td>
+                        <form action="{{ url_for('remove_user', user_type='doctor', user_id=doctor.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to remove this doctor? This is permanent.');">
+                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6" class="text-center">No doctors found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

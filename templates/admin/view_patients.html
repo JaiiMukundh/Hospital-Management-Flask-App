@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>Manage Patients</h2>
+     <div class="row mb-3">
+        <div class="col-md-6">
+            <form method="GET" action="{{ url_for('view_patients') }}">
+                <div class="input-group">
+                    <input type="search" class="form-control" placeholder="Search by name, ID, or phone..." name="query" value="{{ query or '' }}">
+                    <button class="btn btn-outline-secondary" type="submit">Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+                {% for patient in patients %}
+                <tr>
+                    <td>{{ patient.id }}</td>
+                    <td>{{ patient.name }}</td>
+                    <td>{{ patient.email }}</td>
+                    <td>{{ patient.phone }}</td>
+                    <td>
+                        <form action="{{ url_for('remove_user', user_type='patient', user_id=patient.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to remove this patient? This is permanent.');">
+                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5" class="text-center">No patients found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

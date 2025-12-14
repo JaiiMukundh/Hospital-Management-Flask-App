@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header"><h2>Book an Appointment</h2></div>
+                <div class="card-body">
+                    <form id="booking-form" method="POST" action="" novalidate>
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            {{ form.department.label(class="form-label") }}
+                            {{ form.department(class="form-select", id="department-select") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.doctor.label(class="form-label") }}
+                            {{ form.doctor(class="form-select", id="doctor-select") }}
+                             {% for error in form.doctor.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.appointment_date.label(class="form-label") }}
+                            {{ form.appointment_date(class="form-control", id="date-select") }}
+                            {% for error in form.appointment_date.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.appointment_time.label(class="form-label") }}
+                            {{ form.appointment_time(class="form-select", id="time-select") }}
+                             {% for error in form.appointment_time.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const departmentSelect = document.getElementById('department-select');
+        const doctorSelect = document.getElementById('doctor-select');
+        const dateSelect = document.getElementById('date-select');
+        const timeSelect = document.getElementById('time-select');
+
+        function updateDoctors() {
+            const deptId = departmentSelect.value;
+            doctorSelect.innerHTML = '<option value="">-- Select Doctor --</option>';
+            timeSelect.innerHTML = '<option value="">-- Select Date First --</option>';
+            if (deptId) {
+                fetch(`/api/doctors_by_department/${deptId}`)
+                    .then(response => response.json())
+                    .then(doctors => {
+                        doctors.forEach(doctor => {
+                            const option = new Option(doctor.name, doctor.id);
+                            doctorSelect.add(option);
+                        });
+                    });
+            }
+        }
+
+        function updateTimes() {
+            const doctorId = doctorSelect.value;
+            const dateVal = dateSelect.value;
+            timeSelect.innerHTML = '<option value="">-- Select Time --</option>';
+            if (doctorId && dateVal) {
+                fetch(`/api/available_slots/${doctorId}/${dateVal}`)
+                    .then(response => response.json())
+                    .then(slots => {
+                        if (slots.length > 0) {
+                            slots.forEach(slot => {
+                                const option = new Option(slot, slot);
+                                timeSelect.add(option);
+                            });
+                        } else {
+                            timeSelect.innerHTML = '<option value="">-- No slots available --</option>';
+                        }
+                    });
+            }
+        }
+
+        departmentSelect.addEventListener('change', updateDoctors);
+        doctorSelect.addEventListener('change', updateTimes);
+        dateSelect.addEventListener('change', updateTimes);
+        
+        // Set min date for date input
+        dateSelect.min = new Date().toISOString().split("T")[0];
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>Your Appointment History</h2>
+    <a href="{{ url_for('patient_dashboard') }}" class="btn btn-secondary mb-3">Back to Dashboard</a>
+
+    {% for appt in appointments %}
+    <div class="card mb-3">
+        <div class="card-header d-flex justify-content-between flex-wrap">
+            <span>
+                <strong>Appointment with:</strong> Dr. {{ appt.doctor.name }} ({{ appt.doctor.department.name }})
+            </span>
+            <span class="text-muted">
+                {{ appt.appointment_datetime.strftime('%B %d, %Y at %I:%M %p') }}
+            </span>
+        </div>
+        <div class="card-body">
+            {% if appt.status == 'Completed' and appt.treatment %}
+                <h5 class="card-title">Diagnosis</h5>
+                <p class="card-text">{{ appt.treatment.diagnosis }}</p>
+                <h5 class="card-title">Prescription</h5>
+                <p class="card-text">{{ appt.treatment.prescription }}</p>
+            {% else %}
+                <p class="card-text">Status: 
+                    <span class="badge 
+                        {% if appt.status == 'Booked' %}bg-primary
+                        {% elif appt.status == 'Completed' %}bg-success
+                        {% elif appt.status == 'Cancelled' %}bg-danger
+                        {% endif %}">
+                        {{ appt.status }}
+                    </span>
+                </p>
+                {% if appt.status == 'Booked' %}
+                    <p class="text-muted">Treatment details will appear here after the appointment is completed.</p>
+                {% elif appt.status == 'Cancelled' %}
+                     <p class="text-muted">This appointment was cancelled.</p>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        You have no past appointments.
+    </div>
+    {% endfor %}
+{% endblock %}
