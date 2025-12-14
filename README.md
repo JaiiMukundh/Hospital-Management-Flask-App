@@ -1,6 +1,6 @@
-# Hospital Management System (MAD-I Project)
+# Hospital Management System
 
-This is a web-based Hospital Management System developed for the Modern Application Development I course. It features a role-based access system for Administrators, Doctors, and Patients, built using the Flask framework in Python.
+This is a web-based Hospital Management System. It features a role-based access system for Administrators, Doctors, and Patients, built using the Flask framework in Python.
 
 
 
@@ -70,3 +70,4 @@ To run this project, you will need to set up a Python virtual environment and in
 4.  Open your web browser and navigate to:
 
     http://127.0.0.1:5000
+
